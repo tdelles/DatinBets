@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Date Rankings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen p-6">
+
+  <h1 class="text-4xl font-bold mb-6 text-center">💖 Date Rankings Dashboard</h1>
+
+  <div id="dateContainer" class="space-y-6 max-w-3xl mx-auto"></div>
+
+  <script>
+    const defaultProfiles = [
+      {
+        name: "Samantha",
+        age: 28,
+        occupation: "Graphic Designer",
+        datesCount: 5,
+        image: "", // Placeholder
+        qualities: {
+          Humor: 7,
+          Intelligence: 9,
+          Ambition: 6,
+          Empathy: 8,
+          Adventure: 7
+        }
+      },
+      {
+        name: "Jordan",
+        age: 31,
+        occupation: "Software Engineer",
+        datesCount: 3,
+        image: "",
+        qualities: {
+          Humor: 8,
+          Intelligence: 8,
+          Ambition: 9,
+          Empathy: 6,
+          Adventure: 5
+        }
+      },
+      {
+        name: "Taylor",
+        age: 26,
+        occupation: "Teacher",
+        datesCount: 7,
+        image: "",
+        qualities: {
+          Humor: 6,
+          Intelligence: 7,
+          Ambition: 5,
+          Empathy: 9,
+          Adventure: 8
+        }
+      }
+    ];
+
+    let profiles = [...defaultProfiles];
+
+    function renderProfiles() {
+      const container = document.getElementById('dateContainer');
+      container.innerHTML = '';
+      profiles.forEach((profile, index) => {
+        const profileEl = document.createElement('div');
+        profileEl.className = "bg-white p-6 rounded shadow space-y-4";
+
+        const qualitiesHTML = Object.entries(profile.qualities).map(([key, val]) => `
+          <div class="flex items-center justify-between">
+            <label>${key}</label>
+            <input type="range" min="1" max="10" value="${val}" 
+              class="w-1/2"
+              onchange="updateQuality(${index}, '${key}', this.value)" />
+            <span class="ml-2">${val}</span>
+          </div>
+        `).join('');
+
+        profileEl.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-2xl font-semibold">${profile.name}, ${profile.age}</h2>
+              <p class="text-gray-600">${profile.occupation}</p>
+              <p class="text-sm mt-1">Number of dates: ${profile.datesCount}</p>
+            </div>
+            <img src="${profile.image || 'https://via.placeholder.com/80'}" alt="Profile" class="w-20 h-20 rounded-full object-cover border"/>
+          </div>
+          <div class="space-y-2">
+            ${qualitiesHTML}
+          </div>
+          <div class="flex justify-between pt-2">
+            <button onclick="moveUp(${index})" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↑ Move Up</button>
+            <button onclick="moveDown(${index})" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↓ Move Down</button>
+          </div>
+        `;
+        container.appendChild(profileEl);
+      });
+    }
+
+    function updateQuality(profileIndex, qualityKey, newValue) {
+      profiles[profileIndex].qualities[qualityKey] = parseInt(newValue);
+      renderProfiles();
+    }
+
+    function moveUp(index) {
+      if (index > 0) {
+        [profiles[index], profiles[index - 1]] = [profiles[index - 1], profiles[index]];
+        renderProfiles();
+      }
+    }
+
+    function moveDown(index) {
+      if (index < profiles.length - 1) {
+        [profiles[index], profiles[index + 1]] = [profiles[index + 1], profiles[index]];
+        renderProfiles();
+      }
+    }
+
+    renderProfiles();
+  </script>
+</body>
+</html>
